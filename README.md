@@ -3,7 +3,7 @@
 The app was developed based in this [Design Layout](https://dribbble.com/shots/8802042-Weather-Forecast-App), the location is loaded when user open the app, and for get user location as latitude and longitude was used the lib`s: react-native-geolocation-service and react-native-geocoding.
 The api used in this project was [Open Weather Map](https://openweathermap.org/api).
 
-## 🚀 How to run the application
+## :question: How to run the application
 
 2. Clone this repository;
 3. Run `yarn` to install the dependencies;
