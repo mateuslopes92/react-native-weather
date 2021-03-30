@@ -4,6 +4,7 @@ import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 
 import api from '../services/api';
+import {PermissionsAndroid} from 'react-native';
 
 type WeatherState = {
   current?: CurrentState;
@@ -134,34 +135,43 @@ const WeatherProvider: React.FC = ({children}) => {
   };
 
   const getPosition = () => {
-    Geolocation.getCurrentPosition(
-      async position => {
-        Geocoder.init('AIzaSyDEiU7hXqzcRktpy7YU4gTtiJ55dwycB20');
-        Geocoder.from(position.coords.latitude, position.coords.longitude)
-          .then(async json => {
-            var addressComponent = json.results[0];
-            var location: LocationState = {
-              lat: position.coords.latitude,
-              lon: position.coords.longitude,
-              city:
-                addressComponent.address_components[1].long_name +
-                ', ' +
-                addressComponent.address_components[2].short_name,
-            };
-            await AsyncStorage.setItem(
-              '@user_location',
-              JSON.stringify(location),
-            );
-            setLocation(location);
-            await getData(position.coords.latitude, position.coords.longitude);
-          })
-          .catch(error => console.warn(error));
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    Geolocation.requestAuthorization('whenInUse');
+    const hasPermission = PermissionsAndroid.check(
+      'android.permission.ACCESS_COARSE_LOCATION',
     );
+    if (hasPermission) {
+      Geolocation.getCurrentPosition(
+        async position => {
+          Geocoder.init('AIzaSyDEiU7hXqzcRktpy7YU4gTtiJ55dwycB20');
+          Geocoder.from(position.coords.latitude, position.coords.longitude)
+            .then(async json => {
+              var addressComponent = json.results[0];
+              var location: LocationState = {
+                lat: position.coords.latitude,
+                lon: position.coords.longitude,
+                city:
+                  addressComponent.address_components[1].long_name +
+                  ', ' +
+                  addressComponent.address_components[2].short_name,
+              };
+              await AsyncStorage.setItem(
+                '@user_location',
+                JSON.stringify(location),
+              );
+              setLocation(location);
+              await getData(
+                position.coords.latitude,
+                position.coords.longitude,
+              );
+            })
+            .catch(error => console.warn(error));
+        },
+        error => {
+          console.log(error.code, error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    }
   };
 
   const setSelectedIndex = (index: number) => {
