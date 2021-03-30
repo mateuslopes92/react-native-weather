@@ -22,7 +22,7 @@ A API usada neste projeto foi [Open Weather Map](https://openweathermap.org/api)
 1. Clone este repositório
 3. Rode o comando `yarn` para instalar as dependencias do projeto
 4. Rode o comando `npx pod-install` e `npx react-native link`
-5. Rode a aplicação Mobile com `yarn ios` ou `yarn android` (PS: Esta aplicação foi testada somente no iOS)
+5. Rode a aplicação Mobile com `yarn ios` ou `yarn android`
 
 ## :camera: PrintScreens
 
