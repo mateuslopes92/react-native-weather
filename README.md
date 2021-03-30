@@ -32,4 +32,4 @@ A API usada neste projeto foi [Open Weather Map](https://openweathermap.org/api)
 
 ![ANDROID](/src/image/android1.png)
 
-![ANDROID](/src/image/ios2.png)
+![ANDROID](/src/image/android2.png)
