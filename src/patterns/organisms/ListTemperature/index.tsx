@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
+import { Animated } from 'react-native';
 
-import {WeatherContext} from '../../hooks/WeatherContext';
+import {WeatherContext} from '../../../hooks/WeatherContext';
 import {
   Container,
   ListTemperatureHours,
@@ -18,7 +19,7 @@ import {
 } from './styles';
 
 const ListTemperature: React.FC = () => {
-  const {hourly, setSelectedIndex, selectedDay} = useContext(WeatherContext);
+  const {hourly, setSelectedIndex, selectedDay, loading} = useContext(WeatherContext);
   const [selected, setSelected] = useState(selectedDay);
 
   useEffect(() => {
@@ -71,7 +72,7 @@ const ListTemperature: React.FC = () => {
     return icon;
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <ListItemContainer key={String(item.dt)}>
         <ItemTime selected={item === hourly[selectedDay]}>

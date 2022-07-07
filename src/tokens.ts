@@ -3,12 +3,12 @@ export const tokens = {
     colorPrimary: '#312E38',
     colorWhite: '#FFFFFF',
     colorWhiteAlpha: '#666666',
-    colorBlue: '#5091FF',
+    colorBlue: '#5091FF'
   },
   fonts: {
     fontNormal: 'RobotoSlab-Regular',
     fontMedium: 'RobotoSlab-Medium',
-    fontBold: 'RobotoSlab-Bold',
+    fontBold: 'RobotoSlab-Bold'
   },
   sizes: {
     smallest: '4px',
@@ -22,6 +22,6 @@ export const tokens = {
     temperatureItemBox: '80px',
     temperatureItemRadius: '22px',
     temperature: '88px',
-    marginInfoWheater: '54px',
+    marginInfoWheater: '54px'
   },
 };

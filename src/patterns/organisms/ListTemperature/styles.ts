@@ -8,6 +8,7 @@ import {
   Sun,
   Cloud,
 } from 'react-native-feather';
+import { Animated } from 'react-native';
 
 export const Container = styled.View`
   margin-top: 10px;

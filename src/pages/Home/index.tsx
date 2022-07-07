@@ -3,19 +3,19 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {StatusBar} from 'react-native';
 
 import {tokens} from '../../tokens';
-import Header from '../../components/Header';
-import WeatherTimeInfo from '../../components/WeatherTimeInfo';
+import Header from '../../patterns/organisms/Header';
+import WeatherTimeInfo from '../../patterns/organisms/WeatherTimeInfo';
 import {Container} from './styles';
 
 const Home: React.FC = () => {
   return (
-    <Container>
+    <Container testID="home-container">
       <SafeAreaView edges={['top']} />
       <StatusBar
         barStyle="light-content"
         backgroundColor={tokens.colors.colorPrimary}
       />
-      <Header />
+      <Header /> 
       <WeatherTimeInfo />
     </Container>
   );

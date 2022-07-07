@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import {RefreshCw, ChevronRight, CornerRightDown} from 'react-native-feather';
-import {Dimensions} from 'react-native';
+import {Animated, Dimensions} from 'react-native';
 
 const {width} = Dimensions.get('window');
 
@@ -9,7 +9,7 @@ export const Container = styled.View`
   padding-bottom: -10px;
 `;
 
-export const HeaderContainer = styled.View`
+export const HeaderContainer = styled(Animated.View)`
   align-items: center;
   justify-content: center;
   margin-top: 16px;
@@ -40,7 +40,7 @@ export const DateContainer = styled.View`
   justify-content: center;
 `;
 
-export const DateText = styled.Text`
+export const DateText = styled(Animated.Text)`
   color: ${({theme}) => theme.colors.colorWhite};
   font-family: ${({theme}) => theme.fonts.fontMedium};
   font-size: ${({theme}) => theme.sizes.large};
@@ -59,7 +59,7 @@ export const TemperatureContainer = styled.View`
   justify-content: center;
 `;
 
-export const TemperatureText = styled.Text`
+export const TemperatureText = styled(Animated.Text)`
   color: ${({theme}) => theme.colors.colorWhite};
   font-family: ${({theme}) => theme.fonts.fontMedium};
   font-size: ${({theme}) => theme.sizes.temperature};

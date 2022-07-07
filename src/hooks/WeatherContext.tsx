@@ -46,13 +46,14 @@ interface LocationState {
 }
 
 interface WeatherContextData {
-  current: CurrentState;
-  hourly: HourlyState[];
-  daily: DailyState[];
-  location: LocationState;
+  current: Promise<CurrentState | undefined>;
+  hourly: Promise<HourlyState[] | undefined>;
+  daily: Promise<DailyState[] | undefined>;
+  location: Promise<LocationState>;
   getPosition(): void;
   selectedDay: number;
   setSelectedIndex: (index: number) => void;
+  loading?: boolean;
 }
 
 const WeatherContext = createContext<WeatherContextData>(
@@ -60,6 +61,7 @@ const WeatherContext = createContext<WeatherContextData>(
 );
 
 const WeatherProvider: React.FC = ({children}) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [current, setCurrent] = useState<Promise<CurrentState | undefined>>(
     async () => {
       const userCurrent = await AsyncStorage.getItem('@user_weather_current');
@@ -72,7 +74,7 @@ const WeatherProvider: React.FC = ({children}) => {
       return {} as CurrentState;
     },
   );
-  const [hourly, setHourly] = useState<Promise<HourlyState | undefined>>(
+  const [hourly, setHourly] = useState<Promise<HourlyState[] | undefined>>(
     async () => {
       const userHourly = await AsyncStorage.getItem('@user_weather_hourly');
 
@@ -83,7 +85,7 @@ const WeatherProvider: React.FC = ({children}) => {
       return {} as HourlyState;
     },
   );
-  const [daily, setDaily] = useState<Promise<DailyState | undefined>>(
+  const [daily, setDaily] = useState<Promise<DailyState[] | undefined>>(
     async () => {
       const userDaily = await AsyncStorage.getItem('@user_weather_daily');
 
@@ -135,6 +137,7 @@ const WeatherProvider: React.FC = ({children}) => {
   };
 
   const getPosition = () => {
+    setLoading(true);
     Geolocation.requestAuthorization('whenInUse');
     const hasPermission = PermissionsAndroid.check(
       'android.permission.ACCESS_COARSE_LOCATION',
@@ -149,10 +152,7 @@ const WeatherProvider: React.FC = ({children}) => {
               var location: LocationState = {
                 lat: position.coords.latitude,
                 lon: position.coords.longitude,
-                city:
-                  addressComponent.address_components[1].long_name +
-                  ', ' +
-                  addressComponent.address_components[2].short_name,
+                city: addressComponent.plus_code.compound_code.split(',')[1],
               };
               await AsyncStorage.setItem(
                 '@user_location',
@@ -163,10 +163,15 @@ const WeatherProvider: React.FC = ({children}) => {
                 position.coords.latitude,
                 position.coords.longitude,
               );
+              setLoading(false);
             })
-            .catch(error => console.warn(error));
+            .catch(error => {
+              setLoading(false);
+              console.warn(error);
+            });
         },
         error => {
+          setLoading(false);
           console.log(error.code, error.message);
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
@@ -188,6 +193,7 @@ const WeatherProvider: React.FC = ({children}) => {
         getPosition,
         setSelectedIndex,
         selectedDay,
+        loading
       }}>
       {children}
     </WeatherContext.Provider>

@@ -1,11 +1,30 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
+import { Animated } from 'react-native';
 
-import {HourlyState, WeatherContext} from '../../hooks/WeatherContext';
+import {WeatherContext, HourlyState} from '../../../hooks/WeatherContext';
 import {Container, Row, Column, Title, InfoText} from './styles';
 
 const Wheater: React.FC = () => {
-  const {hourly, selectedDay} = useContext(WeatherContext);
+  const translate = new Animated.Value(-500);
+  const {hourly, selectedDay, loading} = useContext(WeatherContext);
   const hourData: HourlyState = hourly[selectedDay];
+  const columnAnimationStyle = {
+    transform: [
+      {
+        translateX: translate
+      }
+    ]
+  };
+
+  useEffect(() => {
+    if (!loading) {
+      Animated.timing(translate, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true
+      }).start();
+    }
+  },[loading]);
 
   const getHour = (itemDate: number | undefined) => {
     const dateParam = itemDate === undefined ? 0 : itemDate;
@@ -20,31 +39,31 @@ const Wheater: React.FC = () => {
   return (
     <Container>
       <Row>
-        <Column>
+        <Column style={columnAnimationStyle}>
           <Title>SUNRISE</Title>
           <InfoText>{getHour(hourData?.sunrise)}</InfoText>
         </Column>
-        <Column>
+        <Column style={columnAnimationStyle}>
           <Title>SUNSET</Title>
           <InfoText>{getHour(hourData?.sunset)}</InfoText>
         </Column>
       </Row>
       <Row>
-        <Column>
+        <Column style={columnAnimationStyle}>
           <Title>HUMIDITY</Title>
           <InfoText>{hourData?.humidity}%</InfoText>
         </Column>
-        <Column>
+        <Column style={columnAnimationStyle}>
           <Title>WIND</Title>
           <InfoText>{hourData?.wind_speed}km/h</InfoText>
         </Column>
       </Row>
       <Row>
-        <Column>
+        <Column style={columnAnimationStyle}>
           <Title>PRESSURE</Title>
           <InfoText>{hourData?.pressure} hPa</InfoText>
         </Column>
-        <Column>
+        <Column style={columnAnimationStyle}>
           <Title>UV INDEX</Title>
           <InfoText>{hourData?.uvi} of 10</InfoText>
         </Column>

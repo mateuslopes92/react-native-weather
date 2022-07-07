@@ -1,11 +1,9 @@
 import {useNavigation} from '@react-navigation/core';
-import React, {useContext} from 'react';
-import {Platform, StatusBar} from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
+import React, {useContext, useEffect} from 'react';
+import {Animated, StatusBar, FlatList} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {WeatherContext} from '../../hooks/WeatherContext';
-import {tokens} from '../../tokens';
 import {
   Container,
   HeaderContainer,
@@ -29,8 +27,26 @@ import {
 } from './styles';
 
 const NextDays: React.FC = () => {
-  const {location, daily} = useContext(WeatherContext);
+  const translate = new Animated.Value(400);
+  const {location, daily, loading} = useContext(WeatherContext);
   const navigation = useNavigation();
+  const rowAnimationStyle = {
+    transform: [
+      {
+        translateX: translate
+      }
+    ]
+  };
+
+  useEffect(() => {
+    if (!loading) {
+      Animated.timing(translate, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true
+      }).start();
+    }
+  },[loading]);
 
   const getDataFormated = (date: number) => {
     var newDate = new Date(date * 1000);
@@ -73,11 +89,11 @@ const NextDays: React.FC = () => {
   const renderItem = item => {
     return (
       <Row>
-        <RowContainer>
+        <RowContainer style={rowAnimationStyle}>
           {getIcon(item?.item?.weather[0].main)}
           <DayText>{getDataFormated(item?.item?.dt)}</DayText>
         </RowContainer>
-        <RowContainer>
+        <RowContainer style={rowAnimationStyle}>
           <MaxText>{item?.item?.temp?.max.toFixed(0)}°C</MaxText>
           <MinText>{item?.item?.temp?.min.toFixed(0)}°C</MinText>
         </RowContainer>
@@ -87,7 +103,7 @@ const NextDays: React.FC = () => {
 
   return (
     <Container>
-      <StatusBar barStyle={'dark-content'} backgroundColor="#eee" />
+      <StatusBar barStyle='dark-content' backgroundColor="#eeeeee" />
       <SafeAreaView edges={['top']} />
       <HeaderContainer>
         <ArrowLeft height={32} width={32} onPress={() => navigation.goBack()} />
@@ -101,7 +117,7 @@ const NextDays: React.FC = () => {
           data={daily}
           renderItem={renderItem}
           keyExtractor={item => String(item.dt)}
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         />
       </Content>
     </Container>

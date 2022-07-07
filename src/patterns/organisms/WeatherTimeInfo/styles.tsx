@@ -1,10 +1,9 @@
 import styled from 'styled-components/native';
-import {Dimensions} from 'react-native';
+import {Animated, Dimensions} from 'react-native';
 
 const {width} = Dimensions.get('window');
 
 export const Container = styled.View`
-  flex: 1;
   width: ${width}px;
   background-color: ${({theme}) => theme.colors.colorWhite};
   border-top-right-radius: ${({theme}) => theme.sizes.temperatureItem};
@@ -23,10 +22,10 @@ export const Row = styled.View.attrs({
   padding: 0 20px 12px 20px;
 `;
 
-export const Column = styled.View`
+export const Column = styled(Animated.View)`
   justify-content: space-between;
-  margin-top: 10px;
-  margin-left: 16px;
+  margin-top: ${({theme}) => theme.sizes.median};
+  margin-left: ${({theme}) => theme.sizes.medium};
   width: 50%;
 `;
 

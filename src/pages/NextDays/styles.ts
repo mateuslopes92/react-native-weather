@@ -9,6 +9,7 @@ import {
   Cloud,
   ChevronLeft,
 } from 'react-native-feather';
+import { Animated } from 'react-native';
 
 export const Container = styled.View`
   flex: 1;
@@ -90,7 +91,7 @@ export const Row = styled.View.attrs({
   padding: 20px;
 `;
 
-export const RowContainer = styled.View`
+export const RowContainer = styled(Animated.View)`
   flex-direction: row;
   align-items: center;
 `;

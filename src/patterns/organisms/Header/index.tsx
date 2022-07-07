@@ -1,7 +1,9 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useContext, useEffect} from 'react';
+import { Animated } from 'react-native';
 
-import {WeatherContext} from '../../hooks/WeatherContext';
+import {WeatherContext} from '../../../hooks/WeatherContext';
+import Loading from '../../atoms/Loading';
 import ListTemperature from '../ListTemperature';
 import {
   Container,
@@ -28,16 +30,39 @@ import {
 } from './styles';
 
 const Header: React.FC = () => {
-  const {current, location, getPosition, setSelectedIndex} = useContext(
+  const opacityText = new Animated.Value(0);
+  const opacityTemperature = new Animated.Value(0);
+  const translate = new Animated.Value(-400);
+  const {current, location, getPosition, setSelectedIndex, loading} = useContext(
     WeatherContext,
   );
 
   const navigation = useNavigation();
 
   useEffect(() => {
+    Animated.timing(opacityText, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: true
+    }).start();
     getPosition();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      Animated.timing(opacityTemperature, {
+        toValue: 1,
+        duration: 1500,
+        useNativeDriver: true
+      }).start();
+      Animated.timing(translate, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true
+      }).start();
+    }
+  }, [loading])
 
   const getDataFormated = (date: number) => {
     var newDate = new Date(date * 1000);
@@ -47,7 +72,15 @@ const Header: React.FC = () => {
 
   return (
     <Container>
-      <HeaderContainer>
+      <HeaderContainer
+        testID="header-container"
+        style={{
+          transform: [
+            {
+              translateX: translate
+            }
+          ]
+        }}>
         <ButtonChangeLocation
           onPress={() => {
             getPosition();
@@ -59,17 +92,25 @@ const Header: React.FC = () => {
       </HeaderContainer>
       <HeaderInfo>
         <DateContainer>
-          <DateText>Today</DateText>
-          <DateFull>{getDataFormated(current?.dt)}</DateFull>
-        </DateContainer>
+          <DateText style={{ opacity: opacityTemperature }}>Today</DateText> 
+          <DateFull>
+            { loading ? 'Loading...' : getDataFormated(current?.dt) }
+          </DateFull> 
+        </DateContainer> 
         <TemperatureContainer>
-          <TemperatureText>
-            {current?.temp?.toFixed(0)}
-            <TemperatureMeasure>°C</TemperatureMeasure>
-          </TemperatureText>
-          <TemperatureFeels>
-            Feels like {current?.feels_like?.toFixed(0)}°C
-          </TemperatureFeels>
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <TemperatureText style={{ opacity: opacityTemperature }}>
+                {current?.temp?.toFixed(0)}
+                <TemperatureMeasure>°C</TemperatureMeasure>
+              </TemperatureText>
+              <TemperatureFeels>
+                Feels like {current?.feels_like?.toFixed(0)}°C
+              </TemperatureFeels>
+            </>
+          )}
         </TemperatureContainer>
       </HeaderInfo>
       <DaysContainer>
